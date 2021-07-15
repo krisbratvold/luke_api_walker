@@ -1,23 +1,46 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
+import {Link, navigate, Router} from "@reach/router"
+
+import People from './Views/People';
+import Planets from './Views/Planets';
+import NotFound from './Views/NotFound';
 
 function App() {
+  const [url,setUrl] = useState({
+    option:"people",
+    id: ""
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate("/"+ url.option + "/" + url.id)
+  }
+
+  const handleChange = (e) => {
+    setUrl({
+      ...url,[e.target.name]:e.target.value
+    })
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={handleSubmit}>
+        <label>Search for: </label>
+        <select name="option" value={url.option} onChange={handleChange}>
+        <option value="people">People</option> 
+        <option value="planets">Planets</option> 
+      </select>
+        <label>ID: </label>
+        <input name="id" value={url.id} onChange={handleChange} type="number"/>
+      <button>Search</button>
+      </form>
+      <Router>
+        <People path="/people/:id"/>
+        <Planets path="/planets/:id"/>
+        <NotFound default/>
+      </Router>
     </div>
   );
 }
